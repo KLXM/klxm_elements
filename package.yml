@@ -1,0 +1,23 @@
+package: klxm_elements
+version: '1.0.0'
+author: 'KLXM Crossmedia / Thomas Skerbis'
+supportpage: 'https://klxm.de'
+
+requires:
+    packages:
+        yform_content_builder: '>=2.1.0'
+    redaxo: '^5.15'
+    php:
+        version: '^8.1'
+
+page:
+    title: 'KLXM Elements'
+    icon: rex-icon fa-puzzle-piece
+    perm: admin
+    subpages:
+        settings:
+            title: 'Einstellungen'
+            icon: rex-icon fa-cog
+        modules:
+            title: 'Module installieren'
+            icon: rex-icon fa-code
