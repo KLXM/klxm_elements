@@ -18,6 +18,3 @@ page:
         settings:
             title: 'Einstellungen'
             icon: rex-icon fa-cog
-        modules:
-            title: 'Module installieren'
-            icon: rex-icon fa-code
