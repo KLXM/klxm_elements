@@ -402,6 +402,10 @@ class Config
         
         // Grid-Felder
         $fields = array_merge($fields, self::getGridFieldNames());
+
+        // Wrapper-Steuerung früh einblenden, damit Layout-Optionen und
+        // deren visible_if-Abhängigkeiten im Modal direkt verfügbar sind.
+        $fields = array_merge($fields, self::getWrapperControlFieldNames());
         
         // Zusätzliche Element-spezifische Felder
         $fields = array_merge($fields, $additionalFields);

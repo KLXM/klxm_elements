@@ -25,10 +25,7 @@ Dieses Addon ergänzt den Haupt-Builder um **Projekt-Elemente** (externe, produk
 | Timeline | `timeline` | Zeitstrahl-Element |
 | Downloads | `downloads` | Dateiliste aus dem Mediapool |
 | Countdown | `countdown` | Countdown bis zu einem Datum |
-| Table | `table` | Einfache Tabellen-Ausgabe |
-| YForm-Liste | `yform_list` | Datensatz-Listen aus YForm-Tabellen (über Profile) |
 | Kontakt-Picker | `contact_picker` | Einzelne Kontakte aus YForm-Profilen auswählen |
-| Forcal-Termine | `forcal_list` | Termine aus forcal (Addon vorausgesetzt) |
 | Kontaktformular | `doform2026` | PHPMailer-Formular mit Validierung und AJAX |
 
 ## 🔧 Hinweis
