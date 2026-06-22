@@ -45,8 +45,8 @@ class Config
     public static function hasThemeBuilder(): bool
     {
         if (self::$hasUikitThemeBuilder === null) {
-            self::$hasUikitThemeBuilder = rex_addon::get('uikit_theme_builder')->isAvailable() 
-                && class_exists('UikitThemeBuilder\DomainContext');
+            self::$hasUikitThemeBuilder = \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::isProviderAvailable()
+                || \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getThemeChoices() !== [];
         }
         return self::$hasUikitThemeBuilder;
     }
@@ -59,8 +59,7 @@ class Config
         if (self::$themeChoices === null) {
             self::$themeChoices = ['' => '-- Automatisch (Domain) --'];
             if (self::hasThemeBuilder()) {
-                $availableThemes = \UikitThemeBuilder\DomainContext::getAvailableThemes();
-                self::$themeChoices = array_merge(self::$themeChoices, $availableThemes);
+                self::$themeChoices = array_merge(self::$themeChoices, \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getThemeChoices());
             }
         }
         return self::$themeChoices;
@@ -81,7 +80,7 @@ class Config
             ];
             
             if (self::hasThemeBuilder()) {
-                $themeBackgrounds = \UikitThemeBuilder\DomainContext::getBackgroundOptions();
+                $themeBackgrounds = \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getBackgroundOptions('uikit');
                 if (!empty($themeBackgrounds)) {
                     self::$backgroundOptions = ['' => 'Keine'];
                     foreach ($themeBackgrounds as $class => $data) {
@@ -108,7 +107,7 @@ class Config
             ];
             
             if (self::hasThemeBuilder()) {
-                $themeBackgrounds = \UikitThemeBuilder\DomainContext::getBackgroundOptions();
+                $themeBackgrounds = \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getBackgroundOptions('uikit');
                 if (!empty($themeBackgrounds)) {
                     self::$backgroundColors = ['' => ['color' => 'transparent', 'label' => 'Keine']];
                     foreach ($themeBackgrounds as $class => $data) {

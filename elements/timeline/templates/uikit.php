@@ -27,7 +27,28 @@ $sectionLight = !empty($elementData['section_light']);
 $enableSection = !isset($elementData['enable_section']) || !empty($elementData['enable_section']);
 $enableContainer = !isset($elementData['enable_container']) || !empty($elementData['enable_container']);
 
-if (empty($items)) {
+if (!is_array($items)) {
+    return;
+}
+
+$allowedTags = ['h2', 'h3', 'h4', 'p'];
+$tag = in_array($tag, $allowedTags, true) ? $tag : 'h2';
+
+$validItems = [];
+foreach ($items as $item) {
+    if (!is_array($item)) {
+        continue;
+    }
+
+    $title = trim((string) ($item['title'] ?? ''));
+    if ('' === $title) {
+        continue;
+    }
+
+    $validItems[] = $item;
+}
+
+if ([] === $validItems) {
     return;
 }
 
@@ -49,14 +70,35 @@ $wrapperClose->setVar('container_width', $container, false);
 
 // CSS-Variablen für Icon-Farbe
 $colorMap = [
-    'primary'   => 'var(--uk-color-primary, #1e87f0)',
-    'secondary' => 'var(--uk-color-secondary, #222)',
+    'primary'   => '#1e87f0',
+    'secondary' => '#222222',
     'success'   => '#32d296',
     'warning'   => '#faa05a',
     'danger'    => '#f0506e',
     'muted'     => '#999',
 ];
 $dotColor = $colorMap[$iconColor] ?? $colorMap['primary'];
+
+$dotColorSoft = static function (string $hex, float $alpha): string {
+    $hex = ltrim($hex, '#');
+
+    if (3 === strlen($hex)) {
+        $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+    }
+
+    if (6 !== strlen($hex)) {
+        return 'rgba(0, 0, 0, ' . $alpha . ')';
+    }
+
+    $r = hexdec(substr($hex, 0, 2));
+    $g = hexdec(substr($hex, 2, 2));
+    $b = hexdec(substr($hex, 4, 2));
+
+    return 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $alpha . ')';
+};
+
+$dotColor25 = $dotColorSoft($dotColor, 0.25);
+$dotColor30 = $dotColorSoft($dotColor, 0.3);
 
 $borderStyle = match ($lineColor) {
     'dashed' => 'dashed',
@@ -66,6 +108,14 @@ $borderStyle = match ($lineColor) {
 
 $isAlternating = $style === 'alternating';
 $isCard        = $style === 'card';
+$titleTag = 'h3';
+if ('h2' === $tag) {
+    $titleTag = 'h3';
+} elseif ('h3' === $tag) {
+    $titleTag = 'h4';
+} elseif ('h4' === $tag || 'p' === $tag) {
+    $titleTag = 'h5';
+}
 
 ?>
 <?= $wrapper->parse('klxm_elements/wrapper.php') ?>
@@ -83,17 +133,13 @@ $isCard        = $style === 'card';
 
     <div class="cb-timeline cb-timeline--<?= rex_escape($style) ?>" role="list">
 
-        <?php foreach ($items as $i => $item):
+        <?php foreach ($validItems as $i => $item):
             $date      = $item['date'] ?? '';
             $title     = $item['title'] ?? '';
             $text      = $item['text'] ?? '';
             $icon      = $item['icon'] ?? '';
             $badge     = $item['badge'] ?? '';
             $highlight = !empty($item['highlight']);
-
-            if (empty($title)) {
-                continue;
-            }
 
             $isRight = $isAlternating && ($i % 2 !== 0);
         ?>
@@ -127,9 +173,9 @@ $isCard        = $style === 'card';
                     </div>
                 <?php endif; ?>
 
-                <<?= rex_escape(in_array($tag, ['h2','h3','h4','p'], true) ? ($tag === 'h2' ? 'h3' : ($tag === 'h3' ? 'h4' : 'h5')) : 'h3') ?> class="cb-timeline__title uk-margin-remove-top uk-margin-small-bottom<?= $highlight ? ' uk-text-bold' : '' ?>">
+                <<?= $titleTag ?> class="cb-timeline__title uk-margin-remove-top uk-margin-small-bottom<?= $highlight ? ' uk-text-bold' : '' ?>">
                     <?= rex_escape($title) ?>
-                </<?= rex_escape(in_array($tag, ['h2','h3','h4','p'], true) ? ($tag === 'h2' ? 'h3' : ($tag === 'h3' ? 'h4' : 'h5')) : 'h3') ?>>
+                </<?= $titleTag ?>>
 
                 <?php if ($text): ?>
                     <p class="uk-margin-remove uk-text-muted"><?= nl2br(rex_escape($text)) ?></p>
@@ -184,13 +230,13 @@ $isCard        = $style === 'card';
 .cb-timeline__item--highlight .cb-timeline__dot {
     width: 38px;
     height: 38px;
-    box-shadow: 0 0 0 4px color-mix(in srgb, <?= rex_escape($dotColor) ?> 25%, transparent);
+    box-shadow: 0 0 0 4px <?= rex_escape($dotColor25) ?>;
 }
 .cb-timeline__line {
     flex: 1;
     width: 2px;
-    background: color-mix(in srgb, <?= rex_escape($dotColor) ?> 30%, transparent);
-    border-left: 2px <?= rex_escape($borderStyle) ?> color-mix(in srgb, <?= rex_escape($dotColor) ?> 30%, transparent);
+    background: <?= rex_escape($dotColor30) ?>;
+    border-left: 2px <?= rex_escape($borderStyle) ?> <?= rex_escape($dotColor30) ?>;
     margin-top: 4px;
     min-height: 24px;
 }
@@ -236,8 +282,8 @@ $isCard        = $style === 'card';
         bottom: 0;
         width: 2px;
         transform: translateX(-50%);
-        background: color-mix(in srgb, <?= rex_escape($dotColor) ?> 30%, transparent);
-        border-left: 2px <?= rex_escape($borderStyle) ?> color-mix(in srgb, <?= rex_escape($dotColor) ?> 30%, transparent);
+        background: <?= rex_escape($dotColor30) ?>;
+        border-left: 2px <?= rex_escape($borderStyle) ?> <?= rex_escape($dotColor30) ?>;
     }
 }
 

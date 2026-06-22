@@ -6,6 +6,8 @@ if (!rex_addon::get('yform_content_builder')->isAvailable()) {
     return;
 }
 
+require_once rex_path::addon('yform_content_builder', 'lib/config/ThemeProviderBridge.php');
+
 rex_extension::register(
     'YFORM_CONTENT_BUILDER_ELEMENT_PATHS',
     static function (rex_extension_point $ep): array {

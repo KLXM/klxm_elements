@@ -5,7 +5,7 @@ use KLXM\YFormContentBuilder\Helper;
 /**
  * Cards Grid Element - Konfiguration
  * Erweitert mit allen Optionen des Content Builder Pro Moduls
- * Unterstützt Integration mit uikit_theme_builder (DomainContext)
+ * Unterstützt Theme-Daten über Extension Points (EP)
  */
 
 // ============================================================================
@@ -24,15 +24,15 @@ if (class_exists('CardsRepeaterExtra') && method_exists('CardsRepeaterExtra', 'G
     #dd('CardsRepeaterExtra gefunden!', $extra);
 }
 
-// Prüfen ob uikit_theme_builder verfügbar ist für dynamische Farboptionen
-$hasUikitThemeBuilder = rex_addon::get('uikit_theme_builder')->isAvailable();
+// Prüfen ob ein Theme-Provider verfügbar ist für dynamische Farboptionen
+$hasThemeProvider = \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::isProviderAvailable()
+    || \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getThemeChoices() !== [];
 
 // Theme-Auswahl Optionen (nur wenn Theme Builder verfügbar)
 $themeChoices = [];
-if ($hasUikitThemeBuilder && class_exists('UikitThemeBuilder\DomainContext')) {
+if ($hasThemeProvider || \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getThemeChoices() !== []) {
     $themeChoices = ['' => $_ci('cards_choice_auto_domain', '-- Automatisch (Domain) --')];
-    $availableThemes = \UikitThemeBuilder\DomainContext::getAvailableThemes();
-    $themeChoices = array_merge($themeChoices, $availableThemes);
+    $themeChoices = array_merge($themeChoices, \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getThemeChoices());
 }
 
 // Standard Card-Style Optionen (stabile uk-card-* Keys)
@@ -72,9 +72,9 @@ $backgroundColors = [
 ];
 
 // Dynamische Farben aus Theme laden wenn verfügbar
-if ($hasUikitThemeBuilder && class_exists('UikitThemeBuilder\DomainContext')) {
+if ($hasThemeProvider || \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getCardStyleOptions() !== []) {
     // Card-Style Optionen aus Theme (bereits im richtigen Format für color_swatches)
-    $themeCardStyles = \UikitThemeBuilder\DomainContext::getCardStyleOptions();
+    $themeCardStyles = \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getCardStyleOptions();
     if (!empty($themeCardStyles)) {
         $cardStyleColors = array_merge($cardStyleColors, $themeCardStyles);
 
@@ -87,7 +87,7 @@ if ($hasUikitThemeBuilder && class_exists('UikitThemeBuilder\DomainContext')) {
     }
     
     // Background-Optionen aus Theme
-    $themeBackgrounds = \UikitThemeBuilder\DomainContext::getBackgroundOptions();
+    $themeBackgrounds = \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getBackgroundOptions('uikit');
     if (!empty($themeBackgrounds)) {
         $backgroundColors = ['' => ['color' => 'transparent', 'label' => 'Keine']];
         $backgroundChoices = ['' => 'Keine'];

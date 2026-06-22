@@ -7,7 +7,7 @@
 $config = \KLXM\Elements\Config::class;
 $hasThemeBuilder = $config::hasThemeBuilder();
 
-// Dynamische Optionen aus uikit_theme_builder
+// Dynamische Optionen aus Theme-Provider
 $overlayOptions = [
     'glass' => 'Glasmorphism',
     'dark' => 'Dunkel',

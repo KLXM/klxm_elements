@@ -4,6 +4,8 @@ Projekt-Elemente für den YForm Content Builder (UIkit-only).
 
 Dieses Addon ergänzt den Haupt-Builder um **Projekt-Elemente** (externe, produktive Bausteine).
 
+Theme-bezogene Optionen für UIkit-Elemente werden über Extension Points des Theme-Providers bezogen; das Addon selbst hält keine direkte Theme-Builder-Logik vor.
+
 ## 🧩 Rolle im Gesamtsystem
 
 - **Core-Elemente** und **Starter-Elemente** liegen im Haupt-Addon `yform_content_builder`.
