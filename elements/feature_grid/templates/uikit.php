@@ -125,7 +125,8 @@ $iconWrapClass = implode(' ', $iconWrapClasses);
                                 <img src="<?= rex_escape(rex_url::media($itemIcon)) ?>"
                                      alt="" aria-hidden="true" class="cb-feature-icon__img" loading="lazy">
                             <?php else: ?>
-                                <img src="<?= rex_escape(rex_media_manager::getUrl('card_1_1_w400', $itemIcon)) ?>"
+                                <?php $iconType = \FriendsOfREDAXO\Builder\Config\MediaTypeRegistry::buildVirtualType('klxm_card_1_1', 400); ?>
+                                <img src="<?= rex_escape(rex_media_manager::getUrl($iconType, $itemIcon)) ?>"
                                      alt="" aria-hidden="true" class="cb-feature-icon__img" loading="lazy">
                             <?php endif; ?>
                         <?php elseif ($itemUikitIcon): ?>

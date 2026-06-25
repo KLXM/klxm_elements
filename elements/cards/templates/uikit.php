@@ -211,6 +211,7 @@ $wrapperClose->setVar('container_width', $containerWidth, false);
         $isHorizontal = in_array($layout, ['media-left', 'media-right']);
         $isOverlay = $layout === 'media-overlay';
         $mediaRatio = $item['media_ratio'] ?? '16-9';
+        $mediaRatioMobile = $item['media_ratio_mobile'] ?? '';
 
         // Ratio Spacer Logic
         $canvasW = 16; $canvasH = 9;
@@ -296,12 +297,18 @@ $wrapperClose->setVar('container_width', $containerWidth, false);
         // Bild-URL via Media Manager (korrektes Ratio, 1200px als src-Fallback)
         $imageSrc = '';
         if (!empty($image) && $isImage($image)) {
-            $mmRatio = str_replace('-', '_', $mediaRatio);
-            if ($mediaRatio === 'original') {
-                $imageSrc = rex_media_manager::getUrl('card_original_w1200', $image);
-            } else {
-                $imageSrc = rex_media_manager::getUrl('card_' . $mmRatio . '_w1200', $image);
-            }
+            $presetMap = [
+                '16-9' => 'klxm_card_16_9',
+                '21-9' => 'klxm_card_21_9',
+                '4-3' => 'klxm_card_4_3',
+                '1-1' => 'klxm_card_1_1',
+                '3-2' => 'klxm_card_3_2',
+                '3-4' => 'klxm_card_3_4',
+                'original' => 'klxm_card_original',
+            ];
+            $preset = $presetMap[$mediaRatio] ?? 'klxm_card_16_9';
+            $type = \FriendsOfREDAXO\Builder\Config\MediaTypeRegistry::buildVirtualType($preset, 1200);
+            $imageSrc = rex_media_manager::getUrl($type, $image);
         }
         
         // Backend-Warnung bei fehlendem Alt-Text (nur im Backend sichtbar)

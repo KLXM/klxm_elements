@@ -96,7 +96,7 @@ $gridAttr = $layout === 'masonry' ? 'masonry: true' : '';
                 <?php
                 $caption = (string) ($item['caption'] ?? '');
                 $fallback = $headline !== '' ? $headline . ' ' . ($index + 1) : 'Galeriebild ' . ($index + 1);
-                $imageAlt = \KLXM\YFormContentBuilder\MediaAltResolver::resolve($img, $caption, $fallback);
+                $imageAlt = \FriendsOfREDAXO\Builder\MediaAltResolver::resolve($img, $caption, $fallback);
                 ?>
                 <div>
                     <figure class="uk-margin-remove">

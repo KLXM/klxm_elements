@@ -11,11 +11,11 @@
 
 $config = \KLXM\Elements\Config::class;
 
-if (!class_exists(\KLXM\YFormContentBuilder\ListProfiles::class)) {
+if (!class_exists(\FriendsOfREDAXO\Builder\ListProfiles::class)) {
     return null;
 }
 
-$contactChoices = \KLXM\YFormContentBuilder\ListProfiles::getContactPickerChoices();
+$contactChoices = \FriendsOfREDAXO\Builder\ListProfiles::getContactPickerChoices();
 
 if ([] === $contactChoices) {
     return null;

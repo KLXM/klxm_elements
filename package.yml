@@ -5,7 +5,7 @@ supportpage: 'https://klxm.de'
 
 requires:
     packages:
-        yform_content_builder: '>=2.1.0'
+        builder: '>=1.0.0'
     redaxo: '^5.15'
     php:
         version: '^8.1'

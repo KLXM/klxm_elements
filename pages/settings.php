@@ -32,7 +32,7 @@ $content .= '<select class="form-control" id="klxm-element-mode" name="element_m
 $content .= '<option value="replace"' . ('replace' === $currentElementMode ? ' selected' : '') . '>Replace (nur KLXM-Elemente)</option>';
 $content .= '<option value="merge"' . ('merge' === $currentElementMode ? ' selected' : '') . '>Merge (KLXM-Elemente + Demo-Elemente)</option>';
 $content .= '</select>';
-$content .= '<p class="help-block">Steuert, ob zusätzlich die Demo-Elemente aus yform_content_builder angeboten werden.</p>';
+$content .= '<p class="help-block">Steuert, ob zusätzlich die Demo-Elemente aus builder angeboten werden.</p>';
 $content .= '</div>';
 $content .= '</fieldset>';
 

@@ -174,15 +174,35 @@ $lightboxId = 'gallery-' . uniqid();
             $finalAlt = $altTextManual ?: ($mediaPoolAlt ?: $media);
 
             // Media-Typ bestimmen
-            $isImage = \KLXM\YFormContentBuilder\Helper::isImage($media);
-            $isVideo = \KLXM\YFormContentBuilder\Helper::isVideo($media);
+            $isImage = \FriendsOfREDAXO\Builder\Helper::isImage($media);
+            $isVideo = \FriendsOfREDAXO\Builder\Helper::isVideo($media);
             
             // Originalbild für Lightbox, Thumbnail für Grid
             $fullImageUrl = rex_url::media($media);
             
-            // MediaManager Typ auswählen
-            $mmType = ($aspectRatio === 'auto' || $layout === 'featured' && $index === 0) ? 'gallery_resize' : 'gallery_thumb';
-            $thumbUrl = $isImage ? rex_media_manager::getUrl($mmType, $media) : '';
+            // Virtuellen Medientyp je Layout/Ratio wählen
+            $isFeaturedLead = $layout === 'featured' && $index === 0;
+            if ($aspectRatio === 'auto' || $isFeaturedLead) {
+                $thumbPreset = 'klxm_card_original';
+            } else {
+                $thumbPresetMap = [
+                    '16:9' => 'klxm_card_16_9',
+                    '4:3' => 'klxm_card_4_3',
+                    '1:1' => 'klxm_card_1_1',
+                    '3:2' => 'klxm_card_3_2',
+                ];
+                $thumbPreset = $thumbPresetMap[$aspectRatio] ?? 'klxm_card_1_1';
+            }
+
+            $thumbWidth = 800;
+            if ($layout === 'logowall') {
+                $thumbWidth = 400;
+            } elseif ($isFeaturedLead) {
+                $thumbWidth = 1200;
+            }
+
+            $thumbType = \FriendsOfREDAXO\Builder\Config\MediaTypeRegistry::buildVirtualType($thumbPreset, $thumbWidth);
+            $thumbUrl = $isImage ? rex_media_manager::getUrl($thumbType, $media) : '';
             
             // Item Width
             $itemWidthClass = '';
@@ -225,7 +245,7 @@ $lightboxId = 'gallery-' . uniqid();
                         <!-- Logo Wall Item -->
                         <div class="uk-text-center uk-flex uk-flex-column uk-flex-middle uk-flex-center" style="min-height: 120px;">
                             <div class="uk-flex uk-flex-middle uk-flex-center uk-flex-1">
-                                <img src="<?= $thumbUrl ?>" alt="<?= rex_escape($finalAlt) ?>" style="max-height: 80px; max-width: 100%; width: auto; height: auto; transition: transform 0.3s ease-in-out; display: inline-block;" class="uk-transition-opaque uk-transition-scale-up">
+                                <img src="<?= $thumbUrl ?>" alt="<?= rex_escape($finalAlt) ?>" loading="lazy" style="max-height: 80px; max-width: 100%; width: auto; height: auto; transition: transform 0.3s ease-in-out; display: inline-block;" class="uk-transition-opaque uk-transition-scale-up">
                             </div>
                             <?php if ($displayCaption): ?>
                                 <p class="uk-text-meta uk-margin-small-top uk-margin-remove-bottom"><?= rex_escape($displayCaption) ?></p>
@@ -235,7 +255,7 @@ $lightboxId = 'gallery-' . uniqid();
                         <!-- Featured Image Presentation -->
                         <div class="uk-margin-medium-bottom">
                             <div class="uk-inline-clip uk-transition-toggle uk-width-1-1">
-                                <img src="<?= $fullImageUrl ?>" alt="<?= rex_escape($finalAlt) ?>" class="uk-width-1-1">
+                                <img src="<?= $fullImageUrl ?>" alt="<?= rex_escape($finalAlt) ?>" loading="lazy" class="uk-width-1-1">
                                 <?php if ($displayCaption): ?>
                                     <div class="uk-overlay uk-overlay-primary uk-position-bottom">
                                         <p class="uk-margin-remove"><?= rex_escape($displayCaption) ?></p>
@@ -250,12 +270,12 @@ $lightboxId = 'gallery-' . uniqid();
                                 <!-- Fixed Aspect Ratio -->
                                 <div class="uk-inline-clip uk-transition-toggle" style="width: 100%;">
                                     <canvas width="<?= explode(':', $aspectRatio)[0] * 100 ?>" height="<?= explode(':', $aspectRatio)[1] * 100 ?>"></canvas>
-                                    <img src="<?= $thumbUrl ?>" alt="<?= rex_escape($finalAlt) ?>" class="uk-transition-opaque uk-transition-scale-up" uk-cover>
+                                    <img src="<?= $thumbUrl ?>" alt="<?= rex_escape($finalAlt) ?>" loading="lazy" class="uk-transition-opaque uk-transition-scale-up" uk-cover>
                                 </div>
                             <?php else: ?>
                                 <!-- Auto Aspect Ratio -->
                                 <div class="uk-inline-clip uk-transition-toggle">
-                                    <img src="<?= $thumbUrl ?>" alt="<?= rex_escape($finalAlt) ?>" class="uk-width-1-1" style="transition: transform 0.3s ease;">
+                                    <img src="<?= $thumbUrl ?>" alt="<?= rex_escape($finalAlt) ?>" loading="lazy" class="uk-width-1-1" style="transition: transform 0.3s ease;">
                                 </div>
                             <?php endif; ?>
                             

@@ -68,8 +68,9 @@ $wrapperClose->setVar('container_width', $container, false);
             $avatarUrl = '';
             $avatarAlt = '';
             if ($authorImage) {
-                $avatarUrl = \KLXM\YFormContentBuilder\MediaUrlResolver::getUrl($authorImage, 'card_1_1_w400');
-                $avatarAlt = \KLXM\YFormContentBuilder\MediaAltResolver::resolve((string) $authorImage, '', (string) $authorName);
+                $avatarType = \FriendsOfREDAXO\Builder\Config\MediaTypeRegistry::buildVirtualType('klxm_card_1_1', 400);
+                $avatarUrl = \FriendsOfREDAXO\Builder\MediaUrlResolver::getUrl($authorImage, $avatarType);
+                $avatarAlt = \FriendsOfREDAXO\Builder\MediaAltResolver::resolve((string) $authorImage, '', (string) $authorName);
             }
             ?>
             <div class="<?= $itemWidthClass ?>">

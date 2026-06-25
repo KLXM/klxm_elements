@@ -133,8 +133,9 @@ $renderIcon = function($icon) {
                 <li>
                     <div class="uk-card uk-card-body <?= $styleClass ?>">
                         <?php if (!empty($item['image'])): ?>
-                            <?php $resolvedImageAlt = \KLXM\YFormContentBuilder\MediaAltResolver::resolve((string) $item['image'], '', (string) ($item['title'] ?? '')); ?>
-                            <img src="<?= rex_media_manager::getUrl('content_card', $item['image']) ?>" 
+                            <?php $resolvedImageAlt = \FriendsOfREDAXO\Builder\MediaAltResolver::resolve((string) $item['image'], '', (string) ($item['title'] ?? '')); ?>
+                            <?php $contentCardType = \FriendsOfREDAXO\Builder\Config\MediaTypeRegistry::buildVirtualType('klxm_card_16_9', 1200); ?>
+                            <img src="<?= rex_media_manager::getUrl($contentCardType, $item['image']) ?>" 
                                  alt="<?= rex_escape($resolvedImageAlt) ?>" 
                                  class="uk-margin-bottom" loading="lazy">
                         <?php endif; ?>
@@ -168,8 +169,9 @@ $renderIcon = function($icon) {
                         <li>
                             <div class="uk-card uk-card-body <?= $styleClass ?>">
                                 <?php if (!empty($item['image'])): ?>
-                                    <?php $resolvedImageAlt = \KLXM\YFormContentBuilder\MediaAltResolver::resolve((string) $item['image'], '', (string) ($item['title'] ?? '')); ?>
-                                    <img src="<?= rex_media_manager::getUrl('content_card', $item['image']) ?>" 
+                                    <?php $resolvedImageAlt = \FriendsOfREDAXO\Builder\MediaAltResolver::resolve((string) $item['image'], '', (string) ($item['title'] ?? '')); ?>
+                                    <?php $contentCardType = \FriendsOfREDAXO\Builder\Config\MediaTypeRegistry::buildVirtualType('klxm_card_16_9', 1200); ?>
+                                    <img src="<?= rex_media_manager::getUrl($contentCardType, $item['image']) ?>" 
                                          alt="<?= rex_escape($resolvedImageAlt) ?>" 
                                          class="uk-margin-bottom" loading="lazy">
                                 <?php endif; ?>
@@ -204,8 +206,9 @@ $renderIcon = function($icon) {
                     </a>
                     <div class="uk-accordion-content">
                         <?php if (!empty($item['image'])): ?>
-                            <?php $resolvedImageAlt = \KLXM\YFormContentBuilder\MediaAltResolver::resolve((string) $item['image'], '', (string) $title); ?>
-                            <img src="<?= rex_media_manager::getUrl('content_card', $item['image']) ?>" 
+                            <?php $resolvedImageAlt = \FriendsOfREDAXO\Builder\MediaAltResolver::resolve((string) $item['image'], '', (string) $title); ?>
+                            <?php $contentCardType = \FriendsOfREDAXO\Builder\Config\MediaTypeRegistry::buildVirtualType('klxm_card_16_9', 1200); ?>
+                            <img src="<?= rex_media_manager::getUrl($contentCardType, $item['image']) ?>" 
                                  alt="<?= rex_escape($resolvedImageAlt) ?>" 
                                  class="uk-margin-bottom" loading="lazy">
                         <?php endif; ?>

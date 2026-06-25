@@ -6,10 +6,42 @@
  * $videoDisplay (inline|poster), $videoControls (autoplay|controls|hover)
  */
 
+use FriendsOfREDAXO\Builder\Media\ResponsiveImage;
+
 if (empty($image)) return;
+
+$imageAlt = (string) ($imageAlt ?? '');
+$imageTitle = (string) ($imageTitle ?? '');
+$mediaPoolTitle = (string) ($mediaPoolTitle ?? '');
+$mediaLightbox = (bool) ($mediaLightbox ?? false);
+$mediaCover = (bool) ($mediaCover ?? false);
+
+if (!isset($isVideo) || !is_callable($isVideo)) {
+    $isVideo = static fn (string $file): bool => \FriendsOfREDAXO\Builder\Helper::isVideo($file);
+}
+if (!isset($isImage) || !is_callable($isImage)) {
+    $isImage = static fn (string $file): bool => \FriendsOfREDAXO\Builder\Helper::isImage($file);
+}
 
 $isVideoFile = $isVideo($image);
 $isImageFile = $isImage($image);
+$mediaRatio = (string) ($mediaRatio ?? '16-9');
+$mediaRatioMobile = (string) ($mediaRatioMobile ?? '');
+$mobileArtDirectionActive = $mediaRatioMobile !== '' && $mediaRatioMobile !== $mediaRatio;
+
+$ratioToPreset = static function (string $ratio): string {
+    $map = [
+        '16-9' => 'klxm_card_16_9',
+        '21-9' => 'klxm_card_21_9',
+        '4-3' => 'klxm_card_4_3',
+        '1-1' => 'klxm_card_1_1',
+        '3-2' => 'klxm_card_3_2',
+        '3-4' => 'klxm_card_3_4',
+        'original' => 'klxm_card_original',
+    ];
+
+    return $map[$ratio] ?? 'klxm_card_16_9';
+};
 
 // Video-Optionen mit Defaults
 $videoDisplay = $videoDisplay ?? 'inline';
@@ -18,27 +50,7 @@ $videoControls = $videoControls ?? 'autoplay';
 if ($isVideoFile): ?>
     <?php
     $videoSrc = rex_url::media($image);
-    
-    // Poster via Media Manager - prüfen ob Typ existiert
-    // Fallback: Video direkt als Poster (Browser zeigt erstes Frame) oder content_card Typ
-    $posterSrc = '';
-    $mediaManagerTypes = rex_media_manager::getSupportedEffects() ? true : false; // Prüfen ob MM aktiv
-    
-    // Versuche video_poster Typ
-    $sql = rex_sql::factory();
-    $sql->setQuery('SELECT id FROM ' . rex::getTable('media_manager_type') . ' WHERE name = ? LIMIT 1', ['video_poster']);
-    if ($sql->getRows() > 0) {
-        $posterSrc = rex_media_manager::getUrl('video_poster', $image);
-    } else {
-        // Fallback: content_card Typ (falls vorhanden) oder Video selbst
-        $sql->setQuery('SELECT id FROM ' . rex::getTable('media_manager_type') . ' WHERE name = ? LIMIT 1', ['content_card']);
-        if ($sql->getRows() > 0) {
-            $posterSrc = rex_media_manager::getUrl('content_card', $image);
-        } else {
-            // Letzter Fallback: Video selbst (Browser zeigt erstes Frame)
-            $posterSrc = $videoSrc;
-        }
-    }
+    $posterSrc = $videoSrc;
     
     // ========================================================================
     // LIGHTBOX MODUS: Immer Standbild mit Play-Button zeigen
@@ -146,41 +158,10 @@ if ($isVideoFile): ?>
                <?= $mediaCover ? 'class="cb-cover-img"' : 'class="uk-width-1-1"' ?>></video>
     <?php endif; ?>
     
-<?php elseif ($isImageFile && $imageSrc): 
-    $mediaRatioForMM = str_replace('-', '_', ($mediaRatio ?? '16-9'));
-    
-    // Srcset-Generierung abhängig vom Ratio
-    $srcset = [];
-    if ($mediaRatio === 'original') {
-        // Original Ratio: verwende card_original_wX Typen (nur resize)
-        foreach ([400, 800, 1200, 1600] as $w) {
-            $srcset[] = rex_media_manager::getUrl('card_original_w' . $w, $image) . ' ' . $w . 'w';
-        }
-    } else {
-        // Feste Ratios: verwende card_RATIO_wX Typen (resize + crop)
-        foreach ([400, 800, 1200, 1600] as $w) {
-            $srcset[] = rex_media_manager::getUrl('card_' . $mediaRatioForMM . '_w' . $w, $image) . ' ' . $w . 'w';
-        }
-    }
-    $srcsetString = implode(', ', $srcset);
-    
-    // =========================================================================
-    // Dynamische sizes-Berechnung basierend auf Layout-Kontext
-    // Retina: Browser wählt automatisch 2x Quelle wenn sizes korrekt ist
-    // =========================================================================
-    $containerMaxPx = 1200; // Standard uk-container
-    if (isset($containerWidth)) {
-        if (strpos($containerWidth, 'xsmall') !== false) { $containerMaxPx = 640; }
-        elseif (strpos($containerWidth, 'small') !== false) { $containerMaxPx = 900; }
-        elseif (strpos($containerWidth, 'xlarge') !== false) { $containerMaxPx = 1600; }
-        elseif (strpos($containerWidth, 'large') !== false) { $containerMaxPx = 1400; }
-        elseif (strpos($containerWidth, 'expand') !== false || $containerWidth === '') { $containerMaxPx = 1920; }
-    }
-    
-    $cols = max(1, intval($columns ?? 3));
-    $colsTablet = max(1, intval($columnsTablet ?? 2));
-    $colsMobile = max(1, intval($columnsMobile ?? 1));
-    
+<?php elseif ($isImageFile): 
+    $preset = $ratioToPreset($mediaRatio);
+    $presetMobile = $mobileArtDirectionActive ? $ratioToPreset($mediaRatioMobile) : '';
+
     // Medien-Anteil berechnen (für horizontale Layouts)
     $mediaFrac = 1.0;
     if (isset($isHorizontal) && $isHorizontal && isset($mediaWidth)) {
@@ -188,42 +169,43 @@ if ($isVideoFile): ?>
             $mediaFrac = intval($mw[1]) / max(1, intval($mw[2]));
         }
     }
-    
-    // Desktop: feste Pixelbreite basierend auf Container und Spalten
-    $desktopImgPx = round($containerMaxPx / $cols * $mediaFrac);
-    // Tablet: Viewport-Prozent
-    $tabletImgVw = round(100 / $colsTablet * $mediaFrac);
-    // Mobile: Viewport-Prozent
-    $mobileImgVw = round(100 / $colsMobile * $mediaFrac);
-    
-    $sizes = sprintf(
-        '(min-width: 1200px) %dpx, (min-width: 640px) %dvw, %dvw',
-        $desktopImgPx,
-        $tabletImgVw,
-        $mobileImgVw
-    );
+
+    $imageBuilder = ResponsiveImage::forFile($image)
+        ->withDesktopPreset($preset)
+        ->withWidths([400, 800, 1200, 1600])
+        ->withContainerWidth((string) ($containerWidth ?? 'uk-container'))
+        ->withColumns((int) ($columns ?? 3), (int) ($columnsTablet ?? 2), (int) ($columnsMobile ?? 1))
+        ->withMediaFraction($mediaFrac);
+
+    if ($presetMobile !== '') {
+        $imageBuilder->withMobilePreset($presetMobile);
+    }
     
     // Cover: reines CSS statt uk-cover JS-Component (vermeidet Safari Resize-Probleme)
-    $coverAttr = $mediaCover ? 'class="cb-cover-img"' : 'class="uk-width-1-1"';
+    $imageClass = $mediaCover ? 'cb-cover-img' : 'uk-width-1-1';
+
+    $defaultImgAttributes = [
+        'alt' => $imageAlt,
+        'class' => $imageClass,
+        'loading' => 'lazy',
+    ];
+
+    $imageTag = $imageBuilder->toPictureTag($defaultImgAttributes);
+
+    $imageTagWithTitle = $imageBuilder->toPictureTag([
+        'alt' => $imageAlt,
+        'title' => $imageTitle,
+        'class' => $imageClass,
+        'loading' => 'lazy',
+    ]);
 ?>
     <?php if ($mediaLightbox): ?>
         <div uk-lightbox>
             <a href="<?= rex_url::media($image) ?>" data-caption="<?= rex_escape($imageTitle ?: ($mediaPoolTitle ?: $imageAlt)) ?>">
-                <img loading="lazy" 
-                     src="<?= $imageSrc ?>" 
-                     srcset="<?= $srcsetString ?>"
-                     sizes="<?= $sizes ?>"
-                     alt="<?= rex_escape($imageAlt) ?>" 
-                     <?= $coverAttr ?>>
+                <?= $imageTag ?>
             </a>
         </div>
     <?php else: ?>
-        <img loading="lazy" 
-             src="<?= $imageSrc ?>" 
-             srcset="<?= $srcsetString ?>"
-             sizes="<?= $sizes ?>"
-             alt="<?= rex_escape($imageAlt) ?>"
-             title="<?= rex_escape($imageTitle) ?>"
-             <?= $coverAttr ?>>
+        <?= $imageTagWithTitle ?>
     <?php endif; ?>
 <?php endif; ?>

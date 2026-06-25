@@ -315,9 +315,9 @@ $gapClass = $gap === 'collapse' ? '' : 'uk-grid-' . $gap;
                             <?php if ($showPreview && $isImage): ?>
                                 <div class="uk-text-center uk-margin-bottom">
                                     <?php if (rex_addon::get('media_manager')->isAvailable()): ?>
-                                        <img src="<?= rex_media_manager::getUrl('yform_content_builder_preview', $file) ?>" alt="<?= rex_escape($title) ?>" class="uk-border-rounded" style="max-width: 64px; max-height: 64px; object-fit: cover;">
+                                        <img src="<?= rex_media_manager::getUrl('builder_preview', $file) ?>" alt="<?= rex_escape($title) ?>" class="uk-border-rounded" loading="lazy" style="max-width: 64px; max-height: 64px; object-fit: cover;">
                                     <?php else: ?>
-                                        <img src="<?= rex_url::media($file) ?>" alt="<?= rex_escape($title) ?>" class="uk-border-rounded" style="max-width: 64px; max-height: 64px; object-fit: cover;">
+                                        <img src="<?= rex_url::media($file) ?>" alt="<?= rex_escape($title) ?>" class="uk-border-rounded" loading="lazy" style="max-width: 64px; max-height: 64px; object-fit: cover;">
                                     <?php endif; ?>
                                 </div>
                             <?php elseif ($showIcon): ?>

@@ -92,7 +92,7 @@ if (!function_exists('movingTilesIsVideo')) {
             $itemTileLight = ' uk-light';
         }
         
-        $imageAlt = \KLXM\YFormContentBuilder\MediaAltResolver::resolve((string) $media, (string) $imageAlt, '');
+        $imageAlt = \FriendsOfREDAXO\Builder\MediaAltResolver::resolve((string) $media, (string) $imageAlt, '');
         
         // Position berechnen: first_position bestimmt wo Element 1 startet
         $isFirstLeft = ($firstPosition === 'left');

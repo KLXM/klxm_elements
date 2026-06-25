@@ -8,9 +8,9 @@ Theme-bezogene Optionen für UIkit-Elemente werden über Extension Points des Th
 
 ## 🧩 Rolle im Gesamtsystem
 
-- **Core-Elemente** und **Starter-Elemente** liegen im Haupt-Addon `yform_content_builder`.
+- **Core-Elemente** und **Starter-Elemente** liegen im Haupt-Addon `builder`.
 - **Projekt-Elemente** liegen in externen Addons wie `klxm_elements`.
-- Die **Modul-Erstellung bleibt zentral** im Haupt-Addon auf `index.php?page=yform_content_builder/modules`.
+- Die **Modul-Erstellung bleibt zentral** im Haupt-Addon auf `index.php?page=builder/modules`.
 
 ## 🎨 Projekt-Elemente (im `klxm_elements`-Addon, UIkit-only)
 
@@ -34,8 +34,48 @@ Theme-bezogene Optionen für UIkit-Elemente werden über Extension Points des Th
 
 Die Modul-Erstellung bleibt zentral in:
 
-- `yform_content_builder` → Seite `modules`
+- `builder` → Seite `modules`
 
 Direktlink im Backend:
 
-- `index.php?page=yform_content_builder/modules`
+- `index.php?page=builder/modules`
+
+## 🖼️ Media-Manager-Integration
+
+`klxm_elements` nutzt das zentrale Typmodell des Hauptaddons:
+
+- Kein Anlegen eigener statischer MM-Typen in `install.php`.
+- Registrierung eigener Presets über `BUILDER_MEDIA_TYPE_PRESETS` in `boot.php`.
+- Ausgabe in Templates über virtuelle Typen `cb_<preset>__<width>`.
+
+Beispiel (Template):
+
+```php
+<?php
+$type = \FriendsOfREDAXO\Builder\Config\MediaTypeRegistry::buildVirtualType('klxm_card_16_9', 1200);
+echo rex_media_manager::getUrl($type, $image);
+```
+
+Beispiel (Preset-Registrierung im Addon):
+
+```php
+rex_extension::register(
+	'BUILDER_MEDIA_TYPE_PRESETS',
+	static function (rex_extension_point $ep): array {
+		$presets = (array) $ep->getSubject();
+		$presets['klxm_card_16_9'] = [
+			'ratio' => '16_9',
+			'mode' => 'focuspoint',
+			'widths' => [400, 800, 1200, 1600],
+			'default_width' => 1200,
+		];
+
+		return $presets;
+	},
+	rex_extension::EARLY
+);
+```
+
+Hinweis:
+
+- Wenn `media_negotiator` installiert ist, erfolgt die Format-Aushandlung automatisch im Hauptaddon als letzter Effekt.

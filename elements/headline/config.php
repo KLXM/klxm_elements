@@ -29,8 +29,8 @@ $colorOptions = [
 ];
 
 // Theme-Provider Farben nur als Strings hinzufügen
-if ($hasThemeBuilder || \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getTextColorOptions('uikit') !== []) {
-    $themeColors = \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getTextColorOptions('uikit');
+if ($hasThemeBuilder || \FriendsOfREDAXO\Builder\Config\ThemeProviderBridge::getTextColorOptions('uikit') !== []) {
+    $themeColors = \FriendsOfREDAXO\Builder\Config\ThemeProviderBridge::getTextColorOptions('uikit');
     if (is_array($themeColors)) {
         foreach ($themeColors as $key => $value) {
             // Nur hinzufügen wenn Wert ein String ist, nicht array

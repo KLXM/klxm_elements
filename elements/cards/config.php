@@ -1,6 +1,6 @@
 <?php
 
-use KLXM\YFormContentBuilder\Helper;
+use FriendsOfREDAXO\Builder\Helper;
 
 /**
  * Cards Grid Element - Konfiguration
@@ -25,14 +25,14 @@ if (class_exists('CardsRepeaterExtra') && method_exists('CardsRepeaterExtra', 'G
 }
 
 // Prüfen ob ein Theme-Provider verfügbar ist für dynamische Farboptionen
-$hasThemeProvider = \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::isProviderAvailable()
-    || \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getThemeChoices() !== [];
+$hasThemeProvider = \FriendsOfREDAXO\Builder\Config\ThemeProviderBridge::isProviderAvailable()
+    || \FriendsOfREDAXO\Builder\Config\ThemeProviderBridge::getThemeChoices() !== [];
 
 // Theme-Auswahl Optionen (nur wenn Theme Builder verfügbar)
 $themeChoices = [];
-if ($hasThemeProvider || \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getThemeChoices() !== []) {
+if ($hasThemeProvider || \FriendsOfREDAXO\Builder\Config\ThemeProviderBridge::getThemeChoices() !== []) {
     $themeChoices = ['' => $_ci('cards_choice_auto_domain', '-- Automatisch (Domain) --')];
-    $themeChoices = array_merge($themeChoices, \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getThemeChoices());
+    $themeChoices = array_merge($themeChoices, \FriendsOfREDAXO\Builder\Config\ThemeProviderBridge::getThemeChoices());
 }
 
 // Standard Card-Style Optionen (stabile uk-card-* Keys)
@@ -72,9 +72,9 @@ $backgroundColors = [
 ];
 
 // Dynamische Farben aus Theme laden wenn verfügbar
-if ($hasThemeProvider || \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getCardStyleOptions() !== []) {
+if ($hasThemeProvider || \FriendsOfREDAXO\Builder\Config\ThemeProviderBridge::getCardStyleOptions() !== []) {
     // Card-Style Optionen aus Theme (bereits im richtigen Format für color_swatches)
-    $themeCardStyles = \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getCardStyleOptions();
+    $themeCardStyles = \FriendsOfREDAXO\Builder\Config\ThemeProviderBridge::getCardStyleOptions();
     if (!empty($themeCardStyles)) {
         $cardStyleColors = array_merge($cardStyleColors, $themeCardStyles);
 
@@ -87,7 +87,7 @@ if ($hasThemeProvider || \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::g
     }
     
     // Background-Optionen aus Theme
-    $themeBackgrounds = \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getBackgroundOptions('uikit');
+    $themeBackgrounds = \FriendsOfREDAXO\Builder\Config\ThemeProviderBridge::getBackgroundOptions('uikit');
     if (!empty($themeBackgrounds)) {
         $backgroundColors = ['' => ['color' => 'transparent', 'label' => 'Keine']];
         $backgroundChoices = ['' => 'Keine'];
@@ -109,8 +109,8 @@ $layoutChoices = [
 
 // Layout-Icons für Selectpicker – externe SVG-Dateien aus assets/icons/
 $_cbIconImg = function(string $name): string {
-    if (class_exists(\KLXM\YFormContentBuilder\Svg::class)) {
-        return \KLXM\YFormContentBuilder\Svg::iconImg($name);
+    if (class_exists(\FriendsOfREDAXO\Builder\Svg::class)) {
+        return \FriendsOfREDAXO\Builder\Svg::iconImg($name);
     }
     return '';
 };
@@ -160,8 +160,8 @@ $cardWidthChoicesBase = [
 ];
 
 // Optional: Layouts aus SVG-Klasse laden wenn verfügbar
-if (class_exists(\KLXM\YFormContentBuilder\Svg::class)) {
-    $rawLayouts = \KLXM\YFormContentBuilder\Svg::getLayoutOptions();
+if (class_exists(\FriendsOfREDAXO\Builder\Svg::class)) {
+    $rawLayouts = \FriendsOfREDAXO\Builder\Svg::getLayoutOptions();
     if (!empty($rawLayouts)) {
         foreach ($rawLayouts as $key => $data) {
             // Bereits lokalisierte Standard-Labels nicht überschreiben
@@ -355,7 +355,7 @@ return [
                 'icon' => 'fa-sliders',
                 'trigger_after' => 'image',
                 'fields' => [
-                    'image_alt', 'image_decorative', 'image_title', 'media_width', 'media_ratio',
+                    'image_alt', 'image_decorative', 'image_title', 'media_width', 'media_ratio', 'media_ratio_mobile',
                     'video_display', 'video_controls', 'media_lightbox', 'media_cover'
                 ]
             ],
@@ -499,6 +499,21 @@ return [
                         'original' => 'Original (kein Crop)'
                     ],
                     'default' => '16-9'
+                ],
+                'media_ratio_mobile' => [
+                    'type' => 'choice',
+                    'label' => 'Seitenverhältnis mobil (optional, Art Direction)',
+                    'choices' => [
+                        '' => 'Wie Desktop',
+                        '16-9' => '16:9',
+                        '21-9' => '21:9 (Cinema)',
+                        '4-3' => '4:3',
+                        '1-1' => '1:1',
+                        '3-2' => '3:2',
+                        '3-4' => '3:4',
+                        'original' => 'Original (kein Crop)'
+                    ],
+                    'default' => ''
                 ],
                 'media_lightbox' => [
                     'type' => 'checkbox',

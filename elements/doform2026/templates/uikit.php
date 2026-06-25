@@ -1025,7 +1025,7 @@ echo $wrapper->parse('klxm_elements/wrapper.php');
 if (!$isBackend && ($ajaxEnhancement || $multistepEnabled) && !defined('YFORM_CB_CONTACT_FORM_AJAX_JS_INCLUDED')) {
     define('YFORM_CB_CONTACT_FORM_AJAX_JS_INCLUDED', true);
     ?>
-    <script src="<?= rex_escape(rex_url::addonAssets('yform_content_builder', 'contact_form/contact-form-ajax.js')) ?>"></script>
+    <script src="<?= rex_escape(rex_url::addonAssets('builder', 'contact_form/contact-form-ajax.js')) ?>"></script>
     <?php
 }
 ?>

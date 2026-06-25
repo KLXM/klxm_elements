@@ -82,29 +82,81 @@ if ($imageShadow) {
     $imgClasses[] = 'uk-box-shadow-' . $imageShadow;
 }
 
+$ratioToPreset = static function (string $ratio): string {
+    $map = [
+        '16_9' => 'klxm_card_16_9',
+        '21_9' => 'klxm_card_21_9',
+        '4_3' => 'klxm_card_4_3',
+        '1_1' => 'klxm_card_1_1',
+        '3_2' => 'klxm_card_3_2',
+        '3_4' => 'klxm_card_3_4',
+        'original' => 'klxm_card_original',
+        '' => 'klxm_card_original',
+    ];
+
+    return $map[$ratio] ?? 'klxm_card_16_9';
+};
+
 // Bild-URL über Media Manager
 $imageUrl = '';
 if ($image) {
-    if ($imageRatio) {
-        $imageUrl = rex_media_manager::getUrl('card_' . $imageRatio . '_w1200', $image);
-    } else {
-        $imageUrl = rex_url::media($image);
-    }
+    $preset = $ratioToPreset((string) $imageRatio);
+    $type = \FriendsOfREDAXO\Builder\Config\MediaTypeRegistry::buildVirtualType($preset, 1200);
+    $imageUrl = rex_media_manager::getUrl($type, $image);
 }
 
-$resolvedImageAlt = \KLXM\YFormContentBuilder\MediaAltResolver::resolve((string) $image, (string) $imageAlt, (string) $heading);
+$resolvedImageAlt = \FriendsOfREDAXO\Builder\MediaAltResolver::resolve((string) $image, (string) $imageAlt, (string) $heading);
 
 // Srcset für responsive Bilder
 $srcset = '';
 if ($image) {
     $sizes = [400, 800, 1200, 1600];
     $parts = [];
+    $preset = $ratioToPreset((string) $imageRatio);
     foreach ($sizes as $w) {
-        $type = $imageRatio ? 'card_' . $imageRatio . '_w' . $w : 'card_original_w' . $w;
+        $type = \FriendsOfREDAXO\Builder\Config\MediaTypeRegistry::buildVirtualType($preset, $w);
         $parts[] = rex_media_manager::getUrl($type, $image) . ' ' . $w . 'w';
     }
     $srcset = implode(', ', $parts);
 }
+
+$estimateContainerMaxPx = static function (string $containerWidth): int {
+    if (str_contains($containerWidth, 'xsmall')) {
+        return 640;
+    }
+    if (str_contains($containerWidth, 'small')) {
+        return 900;
+    }
+    if (str_contains($containerWidth, 'xlarge')) {
+        return 1600;
+    }
+    if (str_contains($containerWidth, 'large')) {
+        return 1400;
+    }
+    if (str_contains($containerWidth, 'expand') || $containerWidth === '') {
+        return 1920;
+    }
+
+    return 1200;
+};
+
+$estimateMediaFraction = static function (string $width): float {
+    if (preg_match('/^(\d+)-(\d+)$/', $width, $m) === 1) {
+        $a = (int) $m[1];
+        $b = (int) $m[2];
+        if ($a > 0 && $b > 0) {
+            return min(1.0, max(0.2, $a / $b));
+        }
+    }
+
+    return 0.5;
+};
+
+$containerMaxPx = $estimateContainerMaxPx((string) $container);
+$mediaFraction = $estimateMediaFraction((string) $imageWidth);
+$desktopImagePx = (int) max(220, round($containerMaxPx * $mediaFraction));
+$tabletImageVw = (int) max(35, round(100 * min(1.0, max(0.3, $mediaFraction))));
+$mobileImageVw = 100;
 
 // Sektion aufbauen
 $sectionClasses = [];
@@ -149,7 +201,7 @@ $wrapperClose->setVar('container_width', $container, false);
 
         <?php
         // Bild-Element (als eigenes Fragment)
-        $mediaBlock = static function () use ($imageUrl, $srcset, $resolvedImageAlt, $imgClasses, $image, $imageStyle): void {
+        $mediaBlock = static function () use ($imageUrl, $srcset, $resolvedImageAlt, $imgClasses, $image, $imageStyle, $desktopImagePx, $tabletImageVw, $mobileImageVw): void {
             if (empty($image) || empty($imageUrl)) {
                 return;
             }
@@ -165,7 +217,7 @@ $wrapperClose->setVar('container_width', $container, false);
                 <img
                     src="<?= rex_escape($imageUrl) ?>"
                     <?= $srcset ? 'srcset="' . rex_escape($srcset) . '"' : '' ?>
-                    sizes="(min-width: 960px) 50vw, 100vw"
+                    sizes="(min-width: 1200px) <?= $desktopImagePx ?>px, (min-width: 640px) <?= $tabletImageVw ?>vw, <?= $mobileImageVw ?>vw"
                     alt="<?= rex_escape($resolvedImageAlt) ?>"
                     class="<?= implode(' ', $imgClasses) ?>"
                     loading="lazy"

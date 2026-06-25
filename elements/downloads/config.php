@@ -30,7 +30,7 @@ $cardStyleChoices = [
 ];
 
 if ($hasThemeBuilder) {
-    $themeCardStyles = \KLXM\YFormContentBuilder\Config\ThemeProviderBridge::getCardStyleOptions();
+    $themeCardStyles = \FriendsOfREDAXO\Builder\Config\ThemeProviderBridge::getCardStyleOptions();
     if (!empty($themeCardStyles)) {
         $cardStyleChoices = ['' => 'Standard (Default)'];
         foreach ($themeCardStyles as $class => $data) {
