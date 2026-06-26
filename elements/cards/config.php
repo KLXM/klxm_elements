@@ -179,11 +179,32 @@ return [
     'version' => '1.13.0',
     'category' => 'content',
     
-    // Settings Modal für Grid/Section-Einstellungen
+    // Settings Modal für Grid/Section-Einstellungen mit Fieldsets
     'settings_modal' => [
         'label' => $_ci('cards_settings_modal_label', 'Allgemeine Block-Einstellungen'),
         'icon' => 'fa-cog',
-        'fields' => ['columns', 'columns_tablet', 'columns_mobile', 'gap', 'match_height', 'card_style', 'card_size', 'card_shadow', 'section_bg', 'section_bg_image', 'section_padding', 'container_width', 'animations_enabled', 'animations_scrollspy', 'animations_delay', 'animations_repeat', 'animations_cascading']
+        'fieldsets' => [
+            'grid' => [
+                'label' => $_ci('cards_settings_grid_label', 'Grid-Einstellungen'),
+                'icon' => 'fa-th',
+                'fields' => ['columns', 'columns_tablet', 'columns_mobile', 'gap', 'match_height'],
+            ],
+            'card_style' => [
+                'label' => $_ci('cards_settings_card_style_label', 'Karten-Darstellung'),
+                'icon' => 'fa-paint-brush',
+                'fields' => ['card_style', 'card_size', 'card_shadow'],
+            ],
+            'section' => [
+                'label' => $_ci('cards_settings_section_label', 'Sektion'),
+                'icon' => 'fa-window-maximize',
+                'fields' => ['section_bg', 'section_bg_image', 'section_padding', 'container_width'],
+            ],
+            'animations' => [
+                'label' => $_ci('cards_settings_animations_label', 'Animationen'),
+                'icon' => 'fa-magic',
+                'fields' => ['animations_enabled', 'animations_scrollspy', 'animations_delay', 'animations_repeat', 'animations_cascading'],
+            ],
+        ],
     ],
     
     'fields' => [

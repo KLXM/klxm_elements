@@ -1,6 +1,10 @@
 cards_element_label = Layout Builder
 cards_element_description = Card grid with flexible layouts and media options
 cards_settings_modal_label = General block settings
+cards_settings_grid_label = Grid settings
+cards_settings_card_style_label = Card appearance
+cards_settings_section_label = Section
+cards_settings_animations_label = Animations
 cards_field_columns = Columns (desktop)
 cards_field_columns_tablet = Columns (tablet)
 cards_field_columns_mobile = Columns (mobile)

@@ -1,11 +1,11 @@
 package: klxm_elements
-version: '1.0.0'
+version: '0.0.0'
 author: 'KLXM Crossmedia / Thomas Skerbis'
 supportpage: 'https://klxm.de'
 
 requires:
     packages:
-        builder: '>=1.0.0'
+        builder: '>0.0.0'
     redaxo: '^5.15'
     php:
         version: '^8.1'

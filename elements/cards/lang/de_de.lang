@@ -1,6 +1,10 @@
 cards_element_label = Layout-Baukasten
 cards_element_description = Karten-Grid mit flexiblen Layouts und Media-Optionen
 cards_settings_modal_label = Allgemeine Block-Einstellungen
+cards_settings_grid_label = Grid-Einstellungen
+cards_settings_card_style_label = Karten-Darstellung
+cards_settings_section_label = Sektion
+cards_settings_animations_label = Animationen
 cards_field_columns = Spalten (Desktop)
 cards_field_columns_tablet = Spalten (Tablet)
 cards_field_columns_mobile = Spalten (Mobile)
