@@ -15,6 +15,7 @@ $imageTitle = (string) ($imageTitle ?? '');
 $mediaPoolTitle = (string) ($mediaPoolTitle ?? '');
 $mediaLightbox = (bool) ($mediaLightbox ?? false);
 $mediaCover = (bool) ($mediaCover ?? false);
+$hidpiEnabled = (bool) ($hidpiEnabled ?? false);
 
 if (!isset($isVideo) || !is_callable($isVideo)) {
     $isVideo = static fn (string $file): bool => \FriendsOfREDAXO\Builder\Helper::isVideo($file);
@@ -172,7 +173,7 @@ if ($isVideoFile): ?>
 
     $imageBuilder = ResponsiveImage::forFile($image)
         ->withDesktopPreset($preset)
-        ->withWidths([400, 800, 1200, 1600])
+        ->withWidths($hidpiEnabled ? [400, 800, 1200, 1600, 2000, 2400, 3200] : [400, 800, 1200, 1600])
         ->withContainerWidth((string) ($containerWidth ?? 'uk-container'))
         ->withColumns((int) ($columns ?? 3), (int) ($columnsTablet ?? 2), (int) ($columnsMobile ?? 1))
         ->withMediaFraction($mediaFrac);

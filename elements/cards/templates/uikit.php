@@ -12,6 +12,7 @@ $columnsMobile = $elementData['columns_mobile'] ?? '1';
 $gap = $elementData['gap'] ?? 'medium';
 $matchHeight = !empty($elementData['match_height']);
 $cardStyle = $elementData['card_style'] ?? 'default';
+$hidpiEnabled = !empty($elementData['hidpi_enabled']);
 
 $cardSize = $elementData['card_size'] ?? 'default';
 $cardShadow = $elementData['card_shadow'] ?? '';

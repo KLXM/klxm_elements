@@ -176,7 +176,7 @@ return [
     'label' => $_ci('cards_element_label', 'Layout-Baukasten'),
     'icon' => 'fa fa-th-large',
     'description' => $_ci('cards_element_description', 'Karten-Grid mit flexiblen Layouts und Media-Optionen'),
-    'version' => '1.13.0',
+    'version' => '1.14.0',
     'category' => 'content',
     
     // Settings Modal für Grid/Section-Einstellungen mit Fieldsets
@@ -192,7 +192,7 @@ return [
             'card_style' => [
                 'label' => $_ci('cards_settings_card_style_label', 'Karten-Darstellung'),
                 'icon' => 'fa-paint-brush',
-                'fields' => ['card_style', 'card_size', 'card_shadow'],
+                'fields' => ['card_style', 'card_size', 'card_shadow', 'hidpi_enabled'],
             ],
             'section' => [
                 'label' => $_ci('cards_settings_section_label', 'Sektion'),
@@ -290,6 +290,12 @@ return [
             'choice_icons' => array_merge(['' => '<svg width="24" height="18" viewBox="0 0 24 18" style="vertical-align:middle;margin-right:6px;"><rect x="3" y="3" width="20" height="14" fill="#ddd" rx="2"/><rect x="1" y="1" width="20" height="14" fill="#fff" stroke="#ccc" rx="2"/></svg>'], $shadowIcons),
             'selectpicker' => true,
             'default' => ''
+        ],
+        'hidpi_enabled' => [
+            'type' => 'checkbox',
+            'label' => 'HiDPI-Varianten erzeugen',
+            'notice' => 'Optional: Fügt größere Srcset-Breiten für Retina/HiDPI hinzu. Kann Datenvolumen erhöhen.',
+            'default' => '0',
         ],
         
         // =============================================================================
