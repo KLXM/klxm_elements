@@ -122,7 +122,6 @@ $wrapperClose->setVar('container_width', $container, false);
         <?php endforeach; ?>
 
     </div>
-</div>
 <?= $wrapperClose->parse('klxm_elements/wrapper.php') ?>
 
 <style>
