@@ -220,6 +220,7 @@ $renderIcon = function($icon) {
                         <?= rex_escape($title) ?>
                     </a>
                     <div class="uk-accordion-content">
+                      <div class="accordion-element__body">
                         <?php if (!empty($item['image'])): ?>
                             <?php $resolvedImageAlt = \FriendsOfREDAXO\Builder\MediaAltResolver::resolve((string) $item['image'], '', (string) $title); ?>
                             <?php $contentCardType = \FriendsOfREDAXO\Builder\Config\MediaTypeRegistry::buildVirtualType('klxm_card_16_9', 1200); ?>
@@ -228,6 +229,7 @@ $renderIcon = function($icon) {
                                  class="uk-margin-bottom" loading="lazy">
                         <?php endif; ?>
                         <?= $content ?>
+                      </div>
                     </div>
                 </li>
             <?php endforeach; ?>
@@ -242,18 +244,20 @@ $renderIcon = function($icon) {
     .accordion-element {
         --klxm-accordion-title-py: 1rem;
         --klxm-accordion-title-px: 1.25rem;
-        --klxm-accordion-content-pb: 1.25rem;
+        --klxm-accordion-content-pb: 1.5rem;
     }
     .accordion-element .uk-accordion-title {
-        padding: var(--klxm-accordion-title-py) 0;
+        padding: var(--klxm-accordion-title-py) var(--klxm-accordion-title-px);
         line-height: 1.4;
     }
-    .accordion-element [uk-accordion] > li[class*="uk-card-"] > .uk-accordion-title {
-        padding: var(--klxm-accordion-title-py) var(--klxm-accordion-title-px);
-    }
-    .accordion-element [uk-accordion] > li[class*="uk-card-"] > .uk-accordion-content {
+    .accordion-element .uk-accordion-content {
         margin-top: 0;
-        padding: 0 var(--klxm-accordion-title-px) var(--klxm-accordion-content-pb);
+    }
+    .accordion-element__body {
+        padding: 0.25rem var(--klxm-accordion-title-px) var(--klxm-accordion-content-pb);
+    }
+    .accordion-element__body > :last-child {
+        margin-bottom: 0;
     }
     </style>
 <?php endif; ?>
