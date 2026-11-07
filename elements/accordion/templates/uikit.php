@@ -254,6 +254,8 @@ $renderIcon = function($icon) {
         --klxm-accordion-title-py: 1rem;
         --klxm-accordion-title-px: 1.25rem;
         --klxm-accordion-content-pb: 1.5rem;
+        --klxm-accordion-gap-after: 2.5rem;
+        margin-bottom: var(--klxm-accordion-gap-after);
     }
     .accordion-element .uk-accordion-title {
         padding: var(--klxm-accordion-title-py) var(--klxm-accordion-title-px);
