@@ -11,7 +11,7 @@ return [
     'label' => 'Accordion / Tabs',
     'icon' => 'fa fa-list',
     'description' => 'Aufklappbare Inhaltsbereiche oder Tabs mit erweiterten Optionen',
-    'version' => '1.13.0',
+    'version' => '1.14.0',
     'category' => 'content',
     'repeater' => true,
     'settings_modal' => [
@@ -35,15 +35,21 @@ return [
         ],
         
         // Accordion Options
-        'accordion_collapsible' => [
-            'type' => 'checkbox',
-            'label' => 'Alle schließbar',
-            'notice' => 'Erlaubt das Schließen aller Elemente gleichzeitig',
+        'accordion_mode' => [
+            'type' => 'choice',
+            'label' => 'Verhalten beim Öffnen',
+            'choices' => [
+                'single' => 'Eins offen – öffnen schließt die anderen',
+                'independent' => 'Jedes bleibt offen, bis es geschlossen wird',
+            ],
+            'default' => 'single',
+            'notice' => 'Bisherige Einstellung „Mehrere öffnen“ entspricht „Jedes bleibt offen“.',
         ],
-        'accordion_multiple' => [
+        'accordion_toggle_all' => [
             'type' => 'checkbox',
-            'label' => 'Mehrere öffnen',
-            'notice' => 'Mehrere Elemente können gleichzeitig geöffnet sein',
+            'label' => 'Knopf „Alle aufklappen“',
+            'notice' => 'Zeigt über dem Akkordeon „Alle aufklappen / Alle zuklappen“ (ab zwei Einträgen). Damit bleiben geöffnete Einträge offen, bis sie geschlossen werden.',
+            'default' => true,
         ],
         'accordion_animation' => [
             'type' => 'choice',
