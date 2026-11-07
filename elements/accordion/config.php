@@ -51,6 +51,12 @@ return [
             'notice' => 'Zeigt über dem Akkordeon „Alle aufklappen / Alle zuklappen“ (ab zwei Einträgen). Damit bleiben geöffnete Einträge offen, bis sie geschlossen werden.',
             'default' => true,
         ],
+        'accordion_title_muted' => [
+            'type' => 'checkbox',
+            'label' => 'Titelbalken hinterlegt (muted)',
+            'notice' => 'Gibt den Titelzeilen die dezente Hintergrundfarbe (uk-background-muted).',
+            'default' => false,
+        ],
         'accordion_animation' => [
             'type' => 'choice',
             'label' => 'Animation',

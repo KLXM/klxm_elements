@@ -16,6 +16,7 @@ $accordionMode = (string) ($elementData['accordion_mode'] ?? (!empty($elementDat
 $toggleAll = !array_key_exists('accordion_toggle_all', $elementData) || !empty($elementData['accordion_toggle_all']);
 $activeItemCount = count(array_filter($items, static fn ($item) => empty($item['disabled'])));
 $toggleAll = $toggleAll && $activeItemCount >= 2;
+$titleMuted = !empty($elementData['accordion_title_muted']);
 // „Alle aufklappen“ braucht Einträge, die offen bleiben
 $multiple = 'independent' === $accordionMode || $toggleAll;
 // Zuklappen ist bei UIkit ohnehin erlaubt; die alte Checkbox „Alle schließbar“ bleibt wirkungsgleich
@@ -215,7 +216,7 @@ $renderIcon = function($icon) {
                 }
                 ?>
                 <li class="<?= implode(' ', array_filter($itemClasses)) ?><?= $openClass ?>">
-                    <a class="uk-accordion-title<?= $isDisabled ? ' uk-text-muted' : '' ?>" href="#">
+                    <a class="uk-accordion-title<?= $titleMuted ? ' uk-background-muted' : '' ?><?= $isDisabled ? ' uk-text-muted' : '' ?>" href="#">
                         <?= $renderIcon($item['icon'] ?? '') ?>
                         <?= rex_escape($title) ?>
                     </a>
@@ -249,6 +250,9 @@ $renderIcon = function($icon) {
     .accordion-element .uk-accordion-title {
         padding: var(--klxm-accordion-title-py) var(--klxm-accordion-title-px);
         line-height: 1.4;
+    }
+    .accordion-element .uk-accordion-title.uk-background-muted + .uk-accordion-content .accordion-element__body {
+        padding-top: var(--klxm-accordion-content-pb);
     }
     .accordion-element .uk-accordion-content {
         margin-top: 0;
