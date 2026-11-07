@@ -17,6 +17,7 @@ $toggleAll = !array_key_exists('accordion_toggle_all', $elementData) || !empty($
 $activeItemCount = count(array_filter($items, static fn ($item) => empty($item['disabled'])));
 $toggleAll = $toggleAll && $activeItemCount >= 2;
 $titleMuted = !empty($elementData['accordion_title_muted']);
+$closeButton = !array_key_exists('accordion_close_button', $elementData) || !empty($elementData['accordion_close_button']);
 // „Alle aufklappen“ braucht Einträge, die offen bleiben
 $multiple = 'independent' === $accordionMode || $toggleAll;
 // Zuklappen ist bei UIkit ohnehin erlaubt; die alte Checkbox „Alle schließbar“ bleibt wirkungsgleich
@@ -195,7 +196,7 @@ $renderIcon = function($icon) {
 
 <?php else: ?>
     <!-- ACCORDION -->
-    <div class="accordion-element" uk-scrollspy="cls: uk-animation-fade">
+    <div class="accordion-element<?= $titleMuted ? ' accordion-element--muted' : '' ?>" uk-scrollspy="cls: uk-animation-fade">
         <?php if ($toggleAll): ?>
             <div class="accordion-element__toolbar uk-flex uk-flex-right uk-margin-small-bottom">
                 <button type="button" class="uk-button uk-button-link uk-button-small accordion-element__toggle-all" data-klxm-accordion-toggle="<?= $uniqueId ?>" aria-controls="<?= $uniqueId ?>" aria-expanded="false" data-label-open="Alle aufklappen" data-label-close="Alle zuklappen">
@@ -230,6 +231,13 @@ $renderIcon = function($icon) {
                                  class="uk-margin-bottom" loading="lazy">
                         <?php endif; ?>
                         <?= $content ?>
+                        <?php if ($closeButton): ?>
+                            <div class="accordion-element__close">
+                                <button type="button" class="uk-button uk-button-link uk-button-small" data-klxm-accordion-close>
+                                    <span uk-icon="icon: chevron-up; ratio: 0.9" aria-hidden="true"></span> Zuklappen<span class="uk-hidden-visually">: <?= rex_escape($title) ?></span>
+                                </button>
+                            </div>
+                        <?php endif; ?>
                       </div>
                     </div>
                 </li>
@@ -251,7 +259,7 @@ $renderIcon = function($icon) {
         padding: var(--klxm-accordion-title-py) var(--klxm-accordion-title-px);
         line-height: 1.4;
     }
-    .accordion-element .uk-accordion-title.uk-background-muted + .uk-accordion-content .accordion-element__body {
+    .accordion-element--muted .accordion-element__body {
         padding-top: var(--klxm-accordion-content-pb);
     }
     .accordion-element .uk-accordion-content {
@@ -260,13 +268,20 @@ $renderIcon = function($icon) {
     .accordion-element__body {
         padding: 0.25rem var(--klxm-accordion-title-px) var(--klxm-accordion-content-pb);
     }
+    .accordion-element .uk-accordion-title {
+        scroll-margin-top: 6rem;
+    }
+    .accordion-element__close {
+        margin-top: 1rem;
+        text-align: right;
+    }
     .accordion-element__body > :last-child {
         margin-bottom: 0;
     }
     </style>
 <?php endif; ?>
 
-<?php if ($displayType === 'accordion' && $toggleAll && !rex::getProperty('klxm_accordion_toggle_js')): ?>
+<?php if ($displayType === 'accordion' && ($toggleAll || $closeButton) && !rex::getProperty('klxm_accordion_toggle_js')): ?>
     <?php rex::setProperty('klxm_accordion_toggle_js', true); ?>
     <script>
     /* Akkordeon: „Alle aufklappen / Alle zuklappen“ (einmal je Seite) */
@@ -282,6 +297,20 @@ $renderIcon = function($icon) {
             var icon = button.querySelector('[uk-icon]');
             if (icon) { icon.style.transform = allOpen ? 'rotate(180deg)' : ''; }
         }
+        // „Zuklappen“ am Ende eines Eintrags
+        document.addEventListener('click', function (event) {
+            var button = event.target.closest ? event.target.closest('[data-klxm-accordion-close]') : null;
+            if (!button || typeof UIkit === 'undefined') { return; }
+            var li = button.closest('li');
+            var list = li ? li.parentElement : null;
+            if (!list) { return; }
+            var title = li.querySelector('.uk-accordion-title');
+            UIkit.accordion(list).toggle(Array.prototype.indexOf.call(list.children, li), true);
+            if (title) {
+                title.focus({ preventScroll: true });
+                if (title.getBoundingClientRect().top < 0) { title.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+            }
+        });
         document.addEventListener('click', function (event) {
             var button = event.target.closest ? event.target.closest('[data-klxm-accordion-toggle]') : null;
             if (!button) { return; }

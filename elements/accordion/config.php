@@ -51,6 +51,12 @@ return [
             'notice' => 'Zeigt über dem Akkordeon „Alle aufklappen / Alle zuklappen“ (ab zwei Einträgen). Damit bleiben geöffnete Einträge offen, bis sie geschlossen werden.',
             'default' => true,
         ],
+        'accordion_close_button' => [
+            'type' => 'checkbox',
+            'label' => 'Knopf „Zuklappen“ am Ende',
+            'notice' => 'Zeigt am Ende jedes geöffneten Eintrags „Zuklappen“ – praktisch bei langen Inhalten.',
+            'default' => true,
+        ],
         'accordion_title_muted' => [
             'type' => 'checkbox',
             'label' => 'Titelbalken hinterlegt (muted)',
