@@ -17,6 +17,8 @@ $toggleAll = !array_key_exists('accordion_toggle_all', $elementData) || !empty($
 $activeItemCount = count(array_filter($items, static fn ($item) => empty($item['disabled'])));
 $toggleAll = $toggleAll && $activeItemCount >= 2;
 $titleMuted = !empty($elementData['accordion_title_muted']);
+$gapAfterMap = ['none' => '0', 'small' => '1.25rem', 'large' => '4rem'];
+$gapAfter = $gapAfterMap[$elementData['accordion_gap_after'] ?? 'default'] ?? '';
 $closeButton = !array_key_exists('accordion_close_button', $elementData) || !empty($elementData['accordion_close_button']);
 // „Alle aufklappen“ braucht Einträge, die offen bleiben
 $multiple = 'independent' === $accordionMode || $toggleAll;
@@ -196,7 +198,7 @@ $renderIcon = function($icon) {
 
 <?php else: ?>
     <!-- ACCORDION -->
-    <div class="accordion-element<?= $titleMuted ? ' accordion-element--muted' : '' ?>" uk-scrollspy="cls: uk-animation-fade">
+    <div class="accordion-element<?= $titleMuted ? ' accordion-element--muted' : '' ?>"<?= '' !== $gapAfter ? ' style="--klxm-accordion-gap-after: ' . $gapAfter . '"' : '' ?> uk-scrollspy="cls: uk-animation-fade">
         <?php if ($toggleAll): ?>
             <div class="accordion-element__toolbar uk-flex uk-flex-right uk-margin-small-bottom">
                 <button type="button" class="uk-button uk-button-link uk-button-small accordion-element__toggle-all" data-klxm-accordion-toggle="<?= $uniqueId ?>" aria-controls="<?= $uniqueId ?>" aria-expanded="false" data-label-open="Alle aufklappen" data-label-close="Alle zuklappen">

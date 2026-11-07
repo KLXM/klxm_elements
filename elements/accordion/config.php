@@ -63,6 +63,17 @@ return [
             'notice' => 'Gibt den Titelzeilen die dezente Hintergrundfarbe (uk-background-muted).',
             'default' => false,
         ],
+        'accordion_gap_after' => [
+            'type' => 'choice',
+            'label' => 'Abstand danach',
+            'choices' => [
+                'none' => 'Keiner',
+                'small' => 'Klein',
+                'default' => 'Standard',
+                'large' => 'Groß',
+            ],
+            'default' => 'default',
+        ],
         'accordion_animation' => [
             'type' => 'choice',
             'label' => 'Animation',
